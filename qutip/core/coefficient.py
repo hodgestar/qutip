@@ -230,6 +230,9 @@ class CompilationOptions:
         # Compilation flags and link flags to pass to the compiler
         "compiler_flags": _compiler_flags,
         "link_flags": _link_flags,
+        "compile_time_env": {
+            "QUTIP_IDXINT_64": idxint_dtype is np.int64,
+        },
         # Extra_header
         "extra_import": ""
     }
@@ -419,7 +422,6 @@ cimport cython
 from qutip.core.cy.coefficient cimport Coefficient
 from qutip.core.cy.math cimport erf, zerf
 from qutip.core.cy.complex_math cimport *
-from qutip.core.data cimport Data
 cdef double pi = 3.14159265358979323
 {compile_opt['extra_import']}
 
@@ -499,13 +501,10 @@ def compile_code(code, file_name, parsed, c_opt):
                 include_dirs=[np.get_include()],
                 language='c++'
             )
-            compile_time_env = {
-                "QUTIP_IDXINT_64": idxint_dtype is np.int64,
-            }
             with _ignore_import_warning_for_pyximporter():
                 ext_modules = cythonize(
                     coeff_file,
-                    compile_time_env=compile_time_env,
+                    compile_time_env=c_opt['compile_time_env'],
                     force=c_opt['recompile'],
                 )
                 setup(ext_modules=ext_modules)
