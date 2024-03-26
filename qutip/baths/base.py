@@ -3,6 +3,23 @@
 from enum import StrEnum
 
 
+# BATH TABLE
+
+# Bosonic
+#
+# D-L [Mats, Pade]
+# Underdamped [Mats, Pade]
+# Ohmic
+
+# Fitted
+#
+# Fit correlation function with exponentials
+# Fit spectral density with sequence of underdamped baths
+
+# User supplied correlation function
+# User supplied spectral density
+
+
 class BathStatistics(StrEnum):
     """
     An enumeration of bath statistics.
@@ -39,7 +56,7 @@ class Bath:
         )
 
     def spectral_density(self, w):
-        """
+        r"""
         Return the spectral density of the bath.
 
         Parameters
