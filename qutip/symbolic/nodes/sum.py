@@ -53,13 +53,14 @@ def from_terms(
     elif len(non_field_dimensions) == 1:
         dims = tuple(non_field_dimensions)[0]
     else:
-        raise ValueError(
+        display_dims = ", ".join(str(d) for d in non_field_dimensions)
+        raise TypeError(
             f"A SymbolicNode.SUM must have terms with compatible dimensions."
-            f" The following dimensions are incompatible: {non_field_dimensions}"
+            f" The following dimensions are incompatible: {display_dims}"
         )
     return SymbolicNode(
         stype=STYPE,
-        dims=terms[0].dims,
+        dims=dims,
         args=ARGS_TYPE(terms),
         metadata=metadata,
     )

@@ -46,22 +46,25 @@ def from_factors(
     factors = tuple(factors)
     if not factors:
         raise ValueError("A SymbolicNode.MATMUL must contain at least one factor.")
-    # TODO: Fix dimension checking, this is just copied from SUM:
-    non_field_dimensions = {
+
+    non_field_dimensions = [
         dims for node in factors if type(dims := node.dims) is not Field
-    }
+    ]
     if not non_field_dimensions:
         dims = Field()
-    elif len(non_field_dimensions) == 1:
-        dims = tuple(non_field_dimensions)[0]
     else:
+        dims = non_field_dimensions[0]
+        for d in non_field_dimensions[1:]:
+            dims = dims @ d
+    if 0:
         raise ValueError(
             f"A SymbolicNode.MATMUL must have factors with compatible dimensions."
             f" The following dimensions are incompatible: {non_field_dimensions}"
         )
+
     return SymbolicNode(
         stype=STYPE,
-        dims=factors[0].dims,
+        dims=dims,
         args=ARGS_TYPE(factors),
         metadata=metadata,
     )
