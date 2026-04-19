@@ -15,6 +15,7 @@ if typing.TYPE_CHECKING:
 STYPE = SymbolicType.MATMUL.value
 ARGS_TYPE = SymbolicArgsType.MATMUL
 
+# TODO: Support flattening of products of products via product(a, b) method.
 
 def from_factors(
     factors: Iterable[SymbolicNode],
