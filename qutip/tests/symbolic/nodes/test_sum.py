@@ -1,17 +1,17 @@
 """
-Tests for qutip.symbolic.nodes.qobj.
+Tests for qutip.symbolic.nodes.sum.
 """
 
 import pytest
 
 import qutip
-from qutip.symbolic.nodes import qobj, sum
+from qutip.symbolic.nodes import to_node, sum
 
 
 class TestFromTerms:
     def test_sum_node_with_one_term(self):
         terms = [
-            qobj.from_qobj(qutip.sigmax()),
+            to_node(qutip.sigmax()),
         ]
         node = sum.from_terms(terms)
 
@@ -22,8 +22,8 @@ class TestFromTerms:
 
     def test_sum_node_with_two_terms(self):
         terms = [
-            qobj.from_qobj(qutip.sigmax()),
-            qobj.from_qobj(qutip.sigmay()),
+            to_node(qutip.sigmax()),
+            to_node(qutip.sigmay()),
         ]
         node = sum.from_terms(terms)
 
@@ -33,7 +33,7 @@ class TestFromTerms:
         assert node.metadata is None
 
     def test_sum_node_preserves_tuple_identity(self):
-        terms = (qobj.from_qobj(qutip.sigmax()),)
+        terms = (to_node(qutip.sigmax()),)
         node = sum.from_terms(terms)
 
         assert node.args is terms
