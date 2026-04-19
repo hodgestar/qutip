@@ -84,3 +84,14 @@ class Qsymbolic:
         if self._node is None:
             return Qsymbolic(other_node)
         return Qsymbolic(sum.from_terms((other_node, negate.negate(self._node))))
+
+    # TODO:
+    # - __mul__
+    # - __rmul__
+    # - __matmul__
+    # - __truedic__
+
+    def __neg__(self) -> Qsymbolic:
+        if self._node is None:
+            return self
+        return Qsymbolic(negate.negate(self._node))

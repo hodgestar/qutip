@@ -171,3 +171,20 @@ class TestQsymbolic:
         H = Qsymbolic()
         minus_H = 0 - H
         assert H is minus_H
+
+    @pytest.mark.parametrize(
+        ("value",),
+        [
+            pytest.param(5, id="constant"),
+            pytest.param(qutip.sigmax(), id="oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), id="super"),
+        ],
+    )
+    def test_neg(self, value):
+        node = to_node(value)
+        H = -Qsymbolic(node)
+        assert H._node == negate.negate(node)
+
+    def test_neg_with_no_node(self):
+        H = Qsymbolic()
+        assert H is -H
