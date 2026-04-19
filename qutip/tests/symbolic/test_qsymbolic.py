@@ -6,7 +6,7 @@ import pytest
 
 import qutip
 from qutip.symbolic.qsymbolic import Qsymbolic
-from qutip.symbolic.nodes import to_node, sum
+from qutip.symbolic.nodes import to_node, negate, sum
 
 
 class TestQsymbolic:
@@ -114,3 +114,60 @@ class TestQsymbolic:
         H = Qsymbolic()
         H_plus_0 = 0 + H
         assert H is H_plus_0
+
+    @pytest.mark.parametrize(
+        ("left", "right"),
+        [
+            pytest.param(5, 1, id="constant-constant"),
+            pytest.param(qutip.sigmax(), qutip.sigmay(), id="oper-oper"),
+            pytest.param(qutip.sigmax(), 2, id="oper-constant"),
+            pytest.param(2, qutip.sigmax(), id="constant-oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), 3, id="super-constant"),
+            pytest.param(3, qutip.spre(qutip.sigmax()), id="constant-super"),
+        ],
+    )
+    def test_sub(self, left, right):
+        left_node = to_node(left)
+        right_node = to_node(right)
+        H = Qsymbolic(left_node) - right
+        assert H._node == sum.from_terms((left_node, negate.negate(right_node)))
+
+    def test_sub_with_no_node(self):
+        H = Qsymbolic() - 1
+        assert H._node == negate.negate(to_node(1))
+
+    def test_sub_with_zero(self):
+        H = Qsymbolic()
+        H_minus_0 = H - 0
+        assert H is H_minus_0
+
+    @pytest.mark.parametrize(
+        ("left", "right"),
+        [
+            pytest.param(5, 1, id="constant-constant"),
+            pytest.param(qutip.sigmax(), qutip.sigmay(), id="oper-oper"),
+            pytest.param(qutip.sigmax(), 2, id="oper-constant"),
+            pytest.param(2, qutip.sigmax(), id="constant-oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), 3, id="super-constant"),
+            pytest.param(3, qutip.spre(qutip.sigmax()), id="constant-super"),
+        ],
+    )
+    def test_rsub(self, left, right):
+        left_node = to_node(left)
+        right_node = to_node(right)
+        H = left - Qsymbolic(right_node)
+        assert H._node == sum.from_terms((left_node, negate.negate(right_node)))
+
+    def test_rsub_with_no_node(self):
+        H = 1 - Qsymbolic()
+        assert H._node == to_node(1)
+
+    def test_rsub_with_zero(self):
+        H = Qsymbolic(to_node(5))
+        minus_H = 0 - H
+        assert minus_H._node == negate.negate(to_node(5))
+
+    def test_rsub_with_zero_and_no_node(self):
+        H = Qsymbolic()
+        minus_H = 0 - H
+        assert H is minus_H

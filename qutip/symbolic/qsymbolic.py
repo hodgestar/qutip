@@ -7,7 +7,7 @@ from __future__ import annotations
 import typing
 
 from qutip.core.dimensions import Field
-from .nodes import to_node, sum
+from .nodes import to_node, negate, sum
 
 
 if typing.TYPE_CHECKING:
@@ -71,10 +71,16 @@ class Qsymbolic:
         if other == 0:
             return self
         other_node = to_node(other)
-        # TODO: Implement
-        XXX
+        if self._node is None:
+            return Qsymbolic(negate.negate(other_node))
+        return Qsymbolic(sum.from_terms((self._node, negate.negate(other_node))))
 
     def __rsub__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
-        # TODO: Implement
-        # return self.__neg__().__add__(other)
-        XXX
+        if other == 0:
+            if self._node is None:
+                return self
+            return Qsymbolic(negate.negate(self._node))
+        other_node = to_node(other)
+        if self._node is None:
+            return Qsymbolic(other_node)
+        return Qsymbolic(sum.from_terms((other_node, negate.negate(self._node))))

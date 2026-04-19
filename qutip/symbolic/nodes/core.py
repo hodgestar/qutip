@@ -61,7 +61,11 @@ class SymbolicType(enum.Enum):
     COMPLEX_CONSTANT = "complex_constant"
     COMPLEX_COEFFICIENT = "complex_coefficient"
 
-    # Operation nodes:
+    # Single-child operation nodes:
+
+    NEGATE = "negate"
+
+    # Multi-child operation nodes:
 
     SUM = "sum"
     MATMUL = "matmul"
@@ -90,10 +94,14 @@ class SymbolicArgsType:
         field_names=["value"],
     )
 
-    # Operation nodes:
+    # Single-child operation nodes:
 
-    SUM = tuple[SymbolicNode]
-    MATMUL = tuple[SymbolicNode]
+    NEGATE = tuple[SymbolicNode]
+
+    # Multi-child operation nodes:
+
+    SUM = tuple[SymbolicNode, ...]
+    MATMUL = tuple[SymbolicNode, ...]
 
 
 @functools.singledispatch
