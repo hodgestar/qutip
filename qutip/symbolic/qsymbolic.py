@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import typing
 
+from qutip.core.dimensions import Field
 from .nodes import to_node, sum
 
 
@@ -29,6 +30,8 @@ class Qsymbolic:
 
     @property
     def type(self) -> str:
+        if isinstance(self._node.dims, Field):
+            return "scalar"
         return self._node.dims.type
 
     @property
@@ -52,12 +55,16 @@ class Qsymbolic:
         if other == 0:
             return self
         other = to_node(other)
+        if self._node is None:
+            return Qsymbolic(other)
         return sum.from_terms((self, other))
 
     def __radd__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
         if other == 0:
             return self
         other = to_node(other)
+        if self._node is None:
+            return Qsymbolic(other)
         return sum.from_terms((other, self))
 
     def __sub__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:

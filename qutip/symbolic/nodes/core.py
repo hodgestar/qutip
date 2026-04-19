@@ -14,6 +14,10 @@ SymbolicNode = collections.namedtuple(
     defaults={"metadata": None, "args": ()},
 )
 
+# TODO: Currently .dims may be either a Field or a Dimension
+#       Is this a good idea? Is this the right way?
+#       If yes, the type information in the docstring should be updated to match.
+#       If not, fix Qsymbolic.type.
 
 SymbolicNode.__doc__ = """
 A node in the symbolic operations graph.
