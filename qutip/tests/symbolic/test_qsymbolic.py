@@ -6,7 +6,7 @@ import pytest
 
 import qutip
 from qutip.symbolic.qsymbolic import Qsymbolic
-from qutip.symbolic.nodes import to_node
+from qutip.symbolic.nodes import to_node, sum
 
 
 class TestQsymbolic:
@@ -63,6 +63,23 @@ class TestQsymbolic:
             H.to("dense")
         assert str(err.value) == "QSymbolic does not have a dtype to alter."
 
+    @pytest.mark.parametrize(
+        ("left", "right"),
+        [
+            pytest.param(5, 1, id="constant-constant"),
+            pytest.param(qutip.sigmax(), qutip.sigmay(), id="oper-oper"),
+            pytest.param(qutip.sigmax(), 2, id="oper-constant"),
+            pytest.param(2, qutip.sigmax(), id="constant-oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), 3, id="super-constant"),
+            pytest.param(3, qutip.spre(qutip.sigmax()), id="constant-super"),
+        ],
+    )
+    def test_add(self, left, right):
+        left_node = to_node(left)
+        right_node = to_node(right)
+        H = Qsymbolic(left_node) + right
+        assert H._node == sum.from_terms((left_node, right_node))
+
     def test_add_with_no_node(self):
         H = Qsymbolic() + 1
         assert H._node == to_node(1)
@@ -71,6 +88,23 @@ class TestQsymbolic:
         H = Qsymbolic()
         H_plus_0 = H + 0
         assert H is H_plus_0
+
+    @pytest.mark.parametrize(
+        ("left", "right"),
+        [
+            pytest.param(5, 1, id="constant-constant"),
+            pytest.param(qutip.sigmax(), qutip.sigmay(), id="oper-oper"),
+            pytest.param(qutip.sigmax(), 2, id="oper-constant"),
+            pytest.param(2, qutip.sigmax(), id="constant-oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), 3, id="super-constant"),
+            pytest.param(3, qutip.spre(qutip.sigmax()), id="constant-super"),
+        ],
+    )
+    def test_radd(self, left, right):
+        left_node = to_node(left)
+        right_node = to_node(right)
+        H = left + Qsymbolic(right_node)
+        assert H._node == sum.from_terms((left_node, right_node))
 
     def test_radd_with_no_node(self):
         H = 1 + Qsymbolic()

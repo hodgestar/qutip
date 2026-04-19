@@ -54,23 +54,23 @@ class Qsymbolic:
     def __add__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
         if other == 0:
             return self
-        other = to_node(other)
+        other_node = to_node(other)
         if self._node is None:
-            return Qsymbolic(other)
-        return sum.from_terms((self, other))
+            return Qsymbolic(other_node)
+        return Qsymbolic(sum.from_terms((self._node, other_node)))
 
     def __radd__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
         if other == 0:
             return self
-        other = to_node(other)
+        other_node = to_node(other)
         if self._node is None:
-            return Qsymbolic(other)
-        return sum.from_terms((other, self))
+            return Qsymbolic(other_node)
+        return Qsymbolic(sum.from_terms((other_node, self._node)))
 
     def __sub__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
         if other == 0:
             return self
-        other = to_node(other)
+        other_node = to_node(other)
         # TODO: Implement
         XXX
 
