@@ -10,8 +10,13 @@ from .core import SymbolicType, SymbolicArgsType, SymbolicNode, to_node
 STYPE = SymbolicType.COMPLEX_CONSTANT.value
 ARGS_TYPE = SymbolicArgsType.COMPLEX_CONSTANT
 
+# We manually register the types in order to support Python 3.10
+# where singledispatch.register does not support unions:
 
-@to_node.register
+
+@to_node.register(complex)
+@to_node.register(float)
+@to_node.register(int)
 def from_number(
     obj: complex | float | int,
     *,
