@@ -95,3 +95,11 @@ class Qsymbolic:
         if self._node is None:
             return self
         return Qsymbolic(negate.negate(self._node))
+
+    # TODO:
+    # - __eq__ -- do we want this?
+    # - __pow__
+    # - __and__ (tensor)
+    # - dag
+    # - conj
+    # - trans (transpose)
