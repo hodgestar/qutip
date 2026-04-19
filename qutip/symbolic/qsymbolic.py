@@ -7,7 +7,7 @@ from __future__ import annotations
 import typing
 
 from qutip.core.dimensions import Field
-from .nodes import to_node, negate, sum
+from .nodes import to_node, matmul, negate, sum
 
 
 if typing.TYPE_CHECKING:
@@ -88,8 +88,18 @@ class Qsymbolic:
     # TODO:
     # - __mul__
     # - __rmul__
-    # - __matmul__
-    # - __truedic__
+
+    def __matmul__(self, other: Qobj | Qsymbolic) -> Qsymbolic:
+        # TODO: Support scalars
+        if self._node is None:
+            raise ValueError("An empty Qsymbolic does not support multiplication.")
+        other_node = to_node(other)
+        return Qsymbolic(matmul.from_factors((self._node, other_node)))
+
+    def __truediv__(self, other: complex | float | int) -> Qsymbolic:
+        if other == 0:
+            raise ZeroDivisionError("division by zero")
+        return self.__mul__(1 / other)
 
     def __neg__(self) -> Qsymbolic:
         if self._node is None:
