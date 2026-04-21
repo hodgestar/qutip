@@ -2,6 +2,8 @@
 Tests for qutip.symbolic.visitors.to_str.
 """
 
+import pytest
+
 from qutip.symbolic import Qsymbolic
 from qutip.symbolic.visitors import to_str
 
@@ -11,14 +13,41 @@ class TestToStr:
         op = Qsymbolic()
         assert to_str(op) is None
 
-    def test_complex_constant_real(self):
-        op = Qsymbolic() + 5
-        assert to_str(op) == "5.0"
+    @pytest.mark.parametrize(
+        ("value", "expected"),
+        [
+            pytest.param(5, "5", id="real"),
+            pytest.param(5.1, "5.1", id="real-fraction"),
+            pytest.param(5j, "5j", id="imag"),
+            pytest.param(5.1j, "5.1j", id="imag-fraction"),
+            pytest.param(1 + 5j, "1+5j", id="complex"),
+            pytest.param(1.2 + 5.3j, "1.2+5.3j", id="complex-fraction"),
+        ],
+    )
+    def test_complex_constant(self, value, expected):
+        op = Qsymbolic() + value
+        assert to_str(op) == expected
 
-    def test_complex_constant_imag(self):
-        op = Qsymbolic() + 5j
-        assert to_str(op) == "5.0j"
+    @pytest.mark.parametrize(
+        ("terms", "expected"),
+        [
+            pytest.param([1, 2], "1 + 2", id="real-real"),
+            pytest.param([1j, 2j], "1j + 2j", id="imag-imag"),
+        ],
+    )
+    def test_sum(self, terms, expected):
+        op = sum([Qsymbolic()] + terms)
+        assert to_str(op) == expected
 
-    def test_complex_constant_complex(self):
-        op = Qsymbolic() + (1 + 5j)
-        assert to_str(op) == "(1+5j)"
+    @pytest.mark.parametrize(
+        ("factors", "expected"),
+        [
+            pytest.param([1, 2], "1 @ 2", id="real-real"),
+            pytest.param([1j, 2j], "1j @ 2j", id="imag-imag"),
+        ],
+    )
+    def test_matmul(self, factors, expected):
+        op = Qsymbolic() + factors[0]
+        for f in factors[1:]:
+            op = op @ f
+        assert to_str(op) == expected

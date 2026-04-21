@@ -30,10 +30,10 @@ def _from_qobj(node: SymbolicNode):
 def _from_complex_constant(node: SymbolicNode):
     value = node.args.value
     if value.imag == 0:
-        return str(value.real)
+        return f"{value.real:g}"
     if value.real == 0:
-        return f"{value.imag}j"
-    return str(value)
+        return f"{value.imag:g}j"
+    return f"{value:g}"
 
 
 @to_str.register("negate")
