@@ -9,5 +9,5 @@ __all__ = [
 ]
 
 from .core import stypedispatch
-from .to_obj import to_qobj
+from .to_qobj import to_qobj
 from .to_str import to_str

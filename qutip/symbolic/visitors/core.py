@@ -32,9 +32,15 @@ class StypeDispatcher:
         self._implementations = {}
 
     def __call__(self, qsym: Qsymbolic, *args, **kw):
+        # TODO: Is None always the right thing to return here?
+        if qsym._node is None:
+            return None
         return self.from_node(qsym._node)
 
     def from_symbolic(self, qsym: Qsymbolic, *args, **kw):
+        # TODO: Is None always the right thing to return here?
+        if qsym._node is None:
+            return None
         return self.from_node(qsym._node)
 
     def from_node(self, node: SymbolicNode, *args, **kw):

@@ -3,6 +3,7 @@ Implementations of symbolic nodes.
 """
 
 __all__ = [
+    "SymbolicNode",
     "SymbolicType",
     "SymbolicArgsType",
     "to_node",
@@ -12,7 +13,7 @@ __all__ = [
     "matmul",
 ]
 
-from .core import SymbolicType, SymbolicArgsType, to_node
+from .core import SymbolicNode, SymbolicType, SymbolicArgsType, to_node
 from . import qobj
 from . import complex_constant
 from . import sum
