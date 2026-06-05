@@ -19,6 +19,8 @@ SymbolicNode = collections.namedtuple(
 #       If yes, the type information in the docstring should be updated to match.
 #       If not, fix Qsymbolic.type.
 
+# TODO: Look at supporting all the important / common operators from qutip.core.operator.
+
 SymbolicNode.__doc__ = """
 A node in the symbolic operations graph.
 
