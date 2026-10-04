@@ -21,6 +21,13 @@ SymbolicNode = collections.namedtuple(
 
 # TODO: Look at supporting all the important / common operators from qutip.core.operator.
 
+# TODO: Look at supporting coefficient functions, including some indication of the behaviour
+#       of the function around a particular set of parameters -- e.g. `t`.
+#       I.e. adaptive timesteps for the solver.
+#
+#       How far can we get with SymPy core (https://docs.sympy.org/latest/modules/core.html)
+#       and symjit (https://github.com/siravan/symjit)?
+
 SymbolicNode.__doc__ = """
 A node in the symbolic operations graph.
 
