@@ -10,8 +10,8 @@ import functools
 
 SymbolicNode = collections.namedtuple(
     "SymbolicNode",
-    field_names=["stype", "dims", "metadata", "args"],
-    defaults={"metadata": None, "args": ()},
+    field_names=["stype", "dims", "args", "metadata"],
+    defaults={"args": (), "metadata": None},
 )
 
 # TODO: Currently .dims may be either a Field or a Dimension
@@ -37,12 +37,12 @@ stype: SymbolicType
    The kind of node.
 dims: Dimensions
    The dimensions of the node.
-metadata: dict or None
-   A dictionary of metadata.
 args: tuple
     A tuple of immutable arguments.
     Nodes of a given `stype` may supply
     a fixed `namedtuple` for the args.
+metadata: dict or None
+   A dictionary of metadata.
 
 The interpretation of the node arguments is
 dependented on the type of node. All arguments
@@ -125,10 +125,37 @@ def to_node(obj: object, *, metadata: dict | None = None):
     metadata: dict or None
         The metadata for the node.
     """
-    if type(obj) is SymbolicNode:
-        return obj
     raise TypeError(
         f"Object {obj!r}, of type {type(obj)}, could not be converted to a SymbolicNode."
+    )
+
+
+@to_node.register
+def from_symbolic_node(
+    obj: SymbolicNode,
+    *,
+    metadata: dict | None = None,
+):
+    """
+    Convert a SymbolicNode to a SymbolicNode.
+
+    If the supplied metadata is None, the node is returned without copying.
+    Otherwise a copy of the node with the metadata *replaced* is returned.
+
+    Parameters
+    ----------
+    obj: SymbolicNode
+       The Qobj to construct the node from.
+    metadata: dict or None
+       The metadata for the node.
+    """
+    if metadata is None:
+        return obj
+    return SymbolicNode(
+        stype=obj.stype,
+        dims=obj.dims,
+        args=obj.args,
+        metadata=metadata,
     )
 
 
