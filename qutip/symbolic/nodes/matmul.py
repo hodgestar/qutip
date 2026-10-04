@@ -24,7 +24,7 @@ def from_factors(
     metadata: dict | None = None,
 ):
     """
-    Construct a MATMUL node from products.
+    Construct a MATMUL node from factors.
 
     Parameters
     ----------
