@@ -4,7 +4,9 @@ Tests for qutip.symbolic.visitors.to_qobj.
 
 import pytest
 
+import qutip
 from qutip.symbolic import Qsymbolic
+from qutip.symbolic.nodes import to_node
 from qutip.symbolic.visitors import to_qobj
 
 
@@ -54,4 +56,20 @@ class TestToQobj:
         op = Qsymbolic() + factors[0]
         for f in factors[1:]:
             op = op @ f
+        assert to_qobj(op) == expected
+
+    @pytest.mark.parametrize(
+        ("subspaces", "expected"),
+        [
+            pytest.param(
+                [qutip.sigmax(), qutip.sigmay()],
+                qutip.tensor(qutip.sigmax(), qutip.sigmay()),
+                id="oper-oper",
+            ),
+        ],
+    )
+    def test_tensor(self, subspaces, expected):
+        op = Qsymbolic(to_node(subspaces[0]))
+        for s in subspaces[1:]:
+            op = op & s
         assert to_qobj(op) == expected

@@ -6,13 +6,14 @@ import operator
 import functools
 
 from qutip import Qobj
+from qutip.core import tensor
 from ..nodes import SymbolicNode
 from .core import stypedispatch
 
 
 @stypedispatch
 def to_qobj(node: SymbolicNode):
-    raise TypeError(f"SymbolicNode with stype={node.stype!r} no supported by to_qobj.")
+    raise TypeError(f"SymbolicNode with stype={node.stype!r} not supported by to_qobj.")
 
 
 _from_node = to_qobj.from_node
@@ -21,7 +22,7 @@ _from_node = to_qobj.from_node
 @to_qobj.register("qobj")
 def _from_qobj(node: SymbolicNode):
     return Qobj(
-        data=node.args.data,
+        node.args.data,
         dims=node.dims,
         isherm=node.args.isherm,
         isunitary=node.args.isunitary,
@@ -50,3 +51,9 @@ def _from_matmul(node: SymbolicNode):
     return functools.reduce(
         operator.__matmul__, (_from_node(factor) for factor in node.args)
     )
+
+
+@to_qobj.register("tensor")
+def _from_tensor(node: SymbolicNode):
+    assert node.args, "SymbolicNode.TENSOR has empty tuple of subspaces"
+    return tensor(_from_node(subspace) for subspace in node.args)

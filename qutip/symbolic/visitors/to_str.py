@@ -13,7 +13,7 @@ from ..nodes import SymbolicNode
 
 @stypedispatch
 def to_str(node: SymbolicNode):
-    raise TypeError(f"SymbolicNode with stype={node.stype!r} no supported by to_str.")
+    raise TypeError(f"SymbolicNode with stype={node.stype!r} not supported by to_str.")
 
 
 _from_node = to_str.from_node
@@ -23,7 +23,7 @@ _from_node = to_str.from_node
 def _from_qobj(node: SymbolicNode):
     # TODO: print the name of the node if it has one?
     # TODO: print isherm and isunitary
-    return f"Qobj: dims={node.dims.as_list()}\ndata=\n{node.data.to_array()}"
+    return f"Qobj: dims={node.dims.as_list()}\ndata=\n{node.args.data.to_array()}"
 
 
 @to_str.register("complex_constant")
@@ -51,3 +51,9 @@ def _from_sum(node: SymbolicNode):
 def _from_matmul(node: SymbolicNode):
     assert node.args, "SymbolicNode.MATMUL has empty tuple of factors"
     return " @ ".join(_from_node(factor) for factor in node.args)
+
+
+@to_str.register("tensor")
+def _from_tensor(node: SymbolicNode):
+    assert node.args, "SymbolicNode.TENSOR has empty tuple of subspaces"
+    return " & ".join(_from_node(subspace) for subspace in node.args)

@@ -7,8 +7,7 @@ from __future__ import annotations
 import typing
 
 from qutip.core.dimensions import Field
-from .nodes import to_node, matmul, negate, sum
-
+from .nodes import to_node, matmul, negate, sum, tensor
 
 if typing.TYPE_CHECKING:
     from qutip import Qobj
@@ -96,6 +95,12 @@ class Qsymbolic:
         other_node = to_node(other)
         return Qsymbolic(matmul.from_factors((self._node, other_node)))
 
+    def __and__(self, other: Qobj | Qsymbolic) -> Qsymbolic:
+        if self._node is None:
+            raise ValueError("An empty Qsymbolic does not support tensor products.")
+        other_node = to_node(other)
+        return Qsymbolic(tensor.from_subspaces((self._node, other_node)))
+
     def __truediv__(self, other: complex | float | int) -> Qsymbolic:
         if other == 0:
             raise ZeroDivisionError("division by zero")
@@ -109,7 +114,6 @@ class Qsymbolic:
     # TODO:
     # - __eq__ -- do we want this?
     # - __pow__
-    # - __and__ (tensor)
     # - dag
     # - conj
     # - trans (transpose)

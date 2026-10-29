@@ -18,3 +18,4 @@ from . import qobj
 from . import complex_constant
 from . import sum
 from . import matmul
+from . import tensor

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import typing
 
-from qutip.core.dimensions import Field
+from qutip.core.dimensions import Compound, Dimensions, Field
 from .core import SymbolicType, SymbolicArgsType, SymbolicNode
 
 if typing.TYPE_CHECKING:
@@ -20,6 +20,7 @@ ARGS_TYPE = SymbolicArgsType.TENSOR
 # TODO: Decide what the compatibility requirements should be for tensor
 #       subspaces by looking at, e.g., the relevant parts of qutip's
 #       dimensions support.
+
 
 def from_subspaces(
     subspaces: Iterable[SymbolicNode],
@@ -47,17 +48,17 @@ def from_subspaces(
         raise ValueError("A SymbolicNode.TENSOR must contain at least one subspace.")
 
     field_dimensions = [
-        dims for node in subspaces if type(dims := node.dims) is Field
+        i for i, node in enumerate(subspaces) if type(node.dims) is Field
     ]
     if field_dimensions:
-        raise ValueError(
+        raise TypeError(
             f"A SymbolicNode.TENSOR must not have subspaces with field dimensions."
             f" The following dimensions are fields: {field_dimensions}"
         )
 
-    dims = subspaces[0].dims
-    for node in subspaces[1:]:
-        dims = dims & node.dims
+    dims_l = [s.dims[0] for s in subspaces]
+    dims_r = [s.dims[1] for s in subspaces]
+    dims = Dimensions([dims_l, dims_r])
 
     return SymbolicNode(
         stype=STYPE,

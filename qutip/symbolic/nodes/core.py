@@ -67,6 +67,8 @@ class SymbolicType(enum.Enum):
     # Leaf nodes:
 
     QOBJ = "qobj"
+    # TODO: Rename complex_constant to constant
+    # TODO: Rename complex_coefficient to coefficient
     COMPLEX_CONSTANT = "complex_constant"
     COMPLEX_COEFFICIENT = "complex_coefficient"
 
@@ -111,6 +113,7 @@ class SymbolicArgsType:
 
     SUM = tuple[SymbolicNode, ...]
     MATMUL = tuple[SymbolicNode, ...]
+    TENSOR = tuple[SymbolicNode, ...]
 
 
 @functools.singledispatch
