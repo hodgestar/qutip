@@ -67,9 +67,8 @@ class SymbolicType(enum.Enum):
     # Leaf nodes:
 
     QOBJ = "qobj"
-    # TODO: Rename complex_constant to constant
     # TODO: Rename complex_coefficient to coefficient
-    COMPLEX_CONSTANT = "complex_constant"
+    CONSTANT = "constant"
     COMPLEX_COEFFICIENT = "complex_coefficient"
 
     # Single-child operation nodes:
@@ -100,8 +99,8 @@ class SymbolicArgsType:
         "QobjNodeArgsType",
         field_names=["data", "isherm", "isunitary"],
     )
-    COMPLEX_CONSTANT = collections.namedtuple(
-        "ComplexConstantArgsType",
+    CONSTANT = collections.namedtuple(
+        "ConstantArgsType",
         field_names=["value"],
     )
 

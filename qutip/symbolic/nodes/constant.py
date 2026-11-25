@@ -5,10 +5,11 @@ A node that stores a complex scalar constant.
 from __future__ import annotations
 
 from qutip.core.dimensions import Field
-from .core import SymbolicType, SymbolicArgsType, SymbolicNode, to_node
 
-STYPE = SymbolicType.COMPLEX_CONSTANT.value
-ARGS_TYPE = SymbolicArgsType.COMPLEX_CONSTANT
+from .core import SymbolicArgsType, SymbolicNode, SymbolicType, to_node
+
+STYPE = SymbolicType.CONSTANT.value
+ARGS_TYPE = SymbolicArgsType.CONSTANT
 
 # We manually register the types in order to support Python 3.10
 # where singledispatch.register does not support unions:
@@ -18,16 +19,16 @@ ARGS_TYPE = SymbolicArgsType.COMPLEX_CONSTANT
 @to_node.register(float)
 @to_node.register(int)
 def from_number(
-    obj: complex | float | int,
+    obj: complex,
     *,
     metadata: dict | None = None,
 ):
     """
-    Construct a COMPLEX_CONSTANT node from a numeric value.
+    Construct a CONSTANT node from a numeric value.
 
     Parameters
     ----------
-    obj: complex | float | int
+    obj: complex
        The value to construct the node from.
     metadata: dict or None
        The metadata for the node.

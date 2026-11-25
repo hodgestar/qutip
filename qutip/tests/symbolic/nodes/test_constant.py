@@ -5,7 +5,7 @@ Tests for qutip.symbolic.nodes.complex_constant.
 import pytest
 
 from qutip.core.dimensions import Field
-from qutip.symbolic.nodes import complex_constant, to_node
+from qutip.symbolic.nodes import constant, to_node
 
 
 class TestFromQobj:
@@ -18,9 +18,9 @@ class TestFromQobj:
         ],
     )
     def test_simple_values(self, value):
-        node = complex_constant.from_number(value)
+        node = constant.from_number(value)
 
-        assert node.stype == "complex_constant"
+        assert node.stype == "constant"
         assert node.dims is Field()
         assert node.args.value == complex(value)
         assert node.metadata is None
@@ -37,4 +37,4 @@ class TestToNode:
     )
     def test_simple_values(self, value):
         node = to_node(value)
-        assert node == complex_constant.from_number(value)
+        assert node == constant.from_number(value)

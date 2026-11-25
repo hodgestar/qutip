@@ -2,8 +2,8 @@
 Support for printing a symbolic tree as a str.
 """
 
-from .core import stypedispatch
 from ..nodes import SymbolicNode
+from .core import stypedispatch
 
 # TODO: It would be more efficient to build a list of lines and
 #       the concatenate the lines at the end. This requires
@@ -26,7 +26,7 @@ def _from_qobj(node: SymbolicNode):
     return f"Qobj: dims={node.dims.as_list()}\ndata=\n{node.args.data.to_array()}"
 
 
-@to_str.register("complex_constant")
+@to_str.register("constant")
 def _from_complex_constant(node: SymbolicNode):
     value = node.args.value
     if value.imag == 0:

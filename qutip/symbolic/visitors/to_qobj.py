@@ -2,11 +2,12 @@
 Support for converting a symbolic tree to a qobj.
 """
 
-import operator
 import functools
+import operator
 
 from qutip import Qobj
 from qutip.core import tensor
+
 from ..nodes import SymbolicNode
 from .core import stypedispatch
 
@@ -29,7 +30,7 @@ def _from_qobj(node: SymbolicNode):
     )
 
 
-@to_qobj.register("complex_constant")
+@to_qobj.register("constant")
 def _from_complex_constant(node: SymbolicNode):
     return node.args.value
 
