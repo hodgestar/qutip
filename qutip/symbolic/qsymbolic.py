@@ -7,11 +7,13 @@ from __future__ import annotations
 import typing
 
 from qutip.core.dimensions import Field
-from .nodes import to_node, matmul, negate, sum, tensor
+
+from .nodes import matmul, negate, sum, tensor, to_node
 
 if typing.TYPE_CHECKING:
     from qutip import Qobj
     from qutip.typing import LayerType
+
     from .nodes import SymbolicNode
 
 
@@ -50,7 +52,7 @@ class Qsymbolic:
     def to(self, data_type: LayerType, copy: bool = False) -> Qobj:
         raise TypeError("QSymbolic does not have a dtype to alter.")
 
-    def __add__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
+    def __add__(self, other: Qobj | Qsymbolic | complex) -> Qsymbolic:
         if other == 0:
             return self
         other_node = to_node(other)
@@ -58,7 +60,7 @@ class Qsymbolic:
             return Qsymbolic(other_node)
         return Qsymbolic(sum.from_terms((self._node, other_node)))
 
-    def __radd__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
+    def __radd__(self, other: Qobj | Qsymbolic | complex) -> Qsymbolic:
         if other == 0:
             return self
         other_node = to_node(other)
@@ -66,7 +68,7 @@ class Qsymbolic:
             return Qsymbolic(other_node)
         return Qsymbolic(sum.from_terms((other_node, self._node)))
 
-    def __sub__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
+    def __sub__(self, other: Qobj | Qsymbolic | complex) -> Qsymbolic:
         if other == 0:
             return self
         other_node = to_node(other)
@@ -74,7 +76,7 @@ class Qsymbolic:
             return Qsymbolic(negate.negate(other_node))
         return Qsymbolic(sum.from_terms((self._node, negate.negate(other_node))))
 
-    def __rsub__(self, other: Qobj | Qsymbolic | complex | float | int) -> Qsymbolic:
+    def __rsub__(self, other: Qobj | Qsymbolic | complex) -> Qsymbolic:
         if other == 0:
             if self._node is None:
                 return self
@@ -101,7 +103,7 @@ class Qsymbolic:
         other_node = to_node(other)
         return Qsymbolic(tensor.from_subspaces((self._node, other_node)))
 
-    def __truediv__(self, other: complex | float | int) -> Qsymbolic:
+    def __truediv__(self, other: complex) -> Qsymbolic:
         if other == 0:
             raise ZeroDivisionError("division by zero")
         return self.__mul__(1 / other)

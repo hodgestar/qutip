@@ -5,8 +5,8 @@ Tests for qutip.symbolic.qsymbolic.
 import pytest
 
 import qutip
+from qutip.symbolic.nodes import negate, sum, to_node
 from qutip.symbolic.qsymbolic import Qsymbolic
-from qutip.symbolic.nodes import to_node, negate, sum
 
 
 class TestQsymbolic:
@@ -48,13 +48,13 @@ class TestQsymbolic:
     def test_data(self):
         H = Qsymbolic()
         with pytest.raises(TypeError) as err:
-            H.data
+            _ = H.data
         assert str(err.value) == "QSymbolic does not support direct conversion to data."
 
     def test_dtype(self):
         H = Qsymbolic()
         with pytest.raises(TypeError) as err:
-            H.dtype
+            _ = H.dtype
         assert str(err.value) == "QSymbolic does not have a dtype."
 
     def test_to(self):
