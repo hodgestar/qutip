@@ -7,7 +7,8 @@ from __future__ import annotations
 import typing
 
 from qutip.core.dimensions import Field
-from .core import SymbolicType, SymbolicArgsType, SymbolicNode
+
+from .core import SymbolicArgsType, SymbolicNode, SymbolicType
 
 if typing.TYPE_CHECKING:
     from collections.abc import Iterable

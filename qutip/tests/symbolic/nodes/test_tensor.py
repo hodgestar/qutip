@@ -7,7 +7,7 @@ import pytest
 import qutip
 from qutip.core import tensor as tensor_qobj
 from qutip.core.dimensions import Dimensions, Field
-from qutip.symbolic.nodes import to_node, tensor
+from qutip.symbolic.nodes import tensor, to_node
 
 
 class TestFromSubspaces:
