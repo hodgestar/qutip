@@ -7,7 +7,8 @@ from __future__ import annotations
 import typing
 
 from qutip.core.dimensions import Field
-from .core import SymbolicType, SymbolicArgsType, SymbolicNode
+
+from .core import SymbolicArgsType, SymbolicNode, SymbolicType
 
 if typing.TYPE_CHECKING:
     from collections.abc import Iterable
@@ -56,13 +57,14 @@ def from_factors(
         dims = Field()
     else:
         dims = non_field_dimensions[0]
-        for d in non_field_dimensions[1:]:
-            dims = dims @ d
-    if 0:
-        raise ValueError(
-            f"A SymbolicNode.MATMUL must have factors with compatible dimensions."
-            f" The following dimensions are incompatible: {non_field_dimensions}"
-        )
+        try:
+            for d in non_field_dimensions[1:]:
+                dims = dims @ d
+        except TypeError as err:
+            raise ValueError(
+                f"A SymbolicNode.MATMUL must have factors with compatible dimensions."
+                f" The following dimensions are incompatible: {err}"
+            )
 
     return SymbolicNode(
         stype=STYPE,
