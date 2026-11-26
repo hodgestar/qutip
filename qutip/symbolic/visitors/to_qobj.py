@@ -7,6 +7,7 @@ import operator
 
 from qutip import Qobj
 from qutip.core import tensor
+from qutip.core.dimensions import Field
 
 from ..nodes import SymbolicNode
 from .core import stypedispatch
@@ -49,9 +50,16 @@ def _from_sum(node: SymbolicNode):
 @to_qobj.register("matmul")
 def _from_matmul(node: SymbolicNode):
     assert node.args, "SymbolicNode.MATMUL has empty tuple of factors"
-    return functools.reduce(
-        operator.__matmul__, (_from_node(factor) for factor in node.args)
-    )
+    # We need to loop ourselves here because any multiplication step
+    # might return a scalar:
+    result = _from_node(node.args[0])
+    for factor in node.args[1:]:
+        obj = _from_node(factor)
+        if not isinstance(result, Qobj) or not isinstance(obj, Qobj):
+            result = result * obj
+        else:
+            result = result @ obj
+    return result
 
 
 @to_qobj.register("tensor")

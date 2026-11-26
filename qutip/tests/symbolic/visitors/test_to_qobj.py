@@ -9,6 +9,13 @@ from qutip.symbolic import Qsymbolic
 from qutip.symbolic.nodes import to_node
 from qutip.symbolic.visitors import to_qobj
 
+# Helpful constants
+
+qobj_2x3 = qutip.Qobj([[1, 2, 3], [4, 5, 6]])
+qobj_3x2 = qutip.Qobj([[1, 2], [3, 4], [5, 6]])
+sx = qutip.sigmax()
+sy = qutip.sigmay()
+
 
 class TestToQobj:
     def test_empty(self):
@@ -44,11 +51,13 @@ class TestToQobj:
     @pytest.mark.parametrize(
         ("factors", "expected"),
         [
+            pytest.param([1, 2], 2, id="real-real"),
+            pytest.param([1j, 2j], -2, id="imag-imag"),
+            pytest.param([sx, sy], sx @ sy, id="op-op"),
+            pytest.param([3, sx, sx], 3 * sx @ sx, id="real-op-op"),
+            pytest.param([1j, sx, sx], 1j * sx @ sx, id="imag-op-op"),
             pytest.param(
-                [1, 2], 2, id="real-real", marks=pytest.mark.xfail(reason="todo")
-            ),
-            pytest.param(
-                [1j, 2j], 2, id="imag-imag", marks=pytest.mark.xfail(reason="todo")
+                [qobj_2x3, qobj_3x2], qobj_2x3 @ qobj_3x2, id="op-op-non-square"
             ),
         ],
     )
