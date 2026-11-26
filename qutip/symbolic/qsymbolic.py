@@ -41,9 +41,11 @@ class Qsymbolic:
 
     @property
     def data(self) -> None:
-        # TODO: Extend the error message to explain how to obtain data.
-        #       E.g. by converting the QSymbolic to Qobj first.
-        raise TypeError("QSymbolic does not support direct conversion to data.")
+        raise TypeError(
+            "QSymbolic does not support direct conversion to data."
+            " Use `qutip.symbolic.visitors.to_qobj(...)` to obtain a"
+            " `Qobj` and then access `.data` on it instead."
+        )
 
     @property
     def dtype(self) -> None:

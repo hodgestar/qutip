@@ -49,7 +49,11 @@ class TestQsymbolic:
         H = Qsymbolic()
         with pytest.raises(TypeError) as err:
             _ = H.data
-        assert str(err.value) == "QSymbolic does not support direct conversion to data."
+        assert str(err.value) == (
+            "QSymbolic does not support direct conversion to data."
+            " Use `qutip.symbolic.visitors.to_qobj(...)` to obtain a `Qobj`"
+            " and then access `.data` on it instead."
+        )
 
     def test_dtype(self):
         H = Qsymbolic()
