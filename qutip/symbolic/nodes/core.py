@@ -73,6 +73,9 @@ class SymbolicType(enum.Enum):
     # Single-child operation nodes:
 
     NEGATE = "negate"
+    ADJOINT = "adjoint"
+    CONJUGATE = "conjugate"
+    TRANSPOSE = "transpose"
 
     # Multi-child operation nodes:
 
@@ -106,6 +109,9 @@ class SymbolicArgsType:
     # Single-child operation nodes:
 
     NEGATE = tuple[SymbolicNode]
+    ADJOINT = tuple[SymbolicNode]
+    CONJUGATE = tuple[SymbolicNode]
+    TRANSPOSE = tuple[SymbolicNode]
 
     # Multi-child operation nodes:
 
@@ -163,5 +169,3 @@ def from_symbolic_node(
 # TODO: We need an easy way to:
 # - Register new symbolic types
 # - Register new symbolic argument types
-# - Dispatch based on stype
-# - Visit a tree of nodes
