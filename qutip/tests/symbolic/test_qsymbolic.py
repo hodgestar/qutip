@@ -29,7 +29,7 @@ class TestQsymbolic:
             pytest.param(qutip.sigmax(), "oper", id="oper"),
         ],
     )
-    def test_type_complex_constant(self, value, expected_type):
+    def test_type_constant(self, value, expected_type):
         H = Qsymbolic(to_node(value))
         assert H.type == expected_type
 

@@ -27,7 +27,7 @@ def _from_qobj(node: SymbolicNode):
 
 
 @to_str.register("constant")
-def _from_complex_constant(node: SymbolicNode):
+def _from_constant(node: SymbolicNode):
     value = node.args.value
     if value.imag == 0:
         return f"{value.real:g}"

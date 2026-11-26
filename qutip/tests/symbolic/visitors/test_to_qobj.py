@@ -33,7 +33,7 @@ class TestToQobj:
             pytest.param(1.2 + 5.3j, 1.2 + 5.3j, id="complex-fraction"),
         ],
     )
-    def test_complex_constant(self, value, expected):
+    def test_constant(self, value, expected):
         op = Qsymbolic() + value
         assert to_qobj(op) == expected
 

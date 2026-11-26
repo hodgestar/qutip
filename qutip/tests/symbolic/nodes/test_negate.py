@@ -12,7 +12,7 @@ class TestNegate:
     @pytest.mark.parametrize(
         "value",
         [
-            pytest.param(2 + 2j, id="complex_constant"),
+            pytest.param(2 + 2j, id="constant"),
             pytest.param(qutip.sigmax(), id="qobj"),
         ],
     )

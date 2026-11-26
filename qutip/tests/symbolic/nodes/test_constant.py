@@ -1,5 +1,5 @@
 """
-Tests for qutip.symbolic.nodes.complex_constant.
+Tests for qutip.symbolic.nodes.constant.
 """
 
 import pytest
