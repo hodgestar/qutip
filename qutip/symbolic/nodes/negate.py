@@ -4,7 +4,7 @@ A node that performs unitary negation on its value.
 
 from __future__ import annotations
 
-from .core import SymbolicType, SymbolicArgsType, SymbolicNode
+from .core import SymbolicArgsType, SymbolicNode, SymbolicType
 
 STYPE = SymbolicType.NEGATE.value
 ARGS_TYPE = SymbolicArgsType.NEGATE
@@ -16,7 +16,7 @@ def negate(
     metadata: dict | None = None,
 ):
     """
-    Construct a NEG node from a node to negate.
+    Construct a NEGATE node from a node to negate.
 
     Parameters
     ----------
