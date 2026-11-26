@@ -5,7 +5,7 @@ Tests for qutip.symbolic.qsymbolic.
 import pytest
 
 import qutip
-from qutip.symbolic.nodes import negate, sum, to_node
+from qutip.symbolic.nodes import adjoint, conjugate, negate, sum, to_node, transpose
 from qutip.symbolic.qsymbolic import Qsymbolic
 
 
@@ -176,6 +176,10 @@ class TestQsymbolic:
         minus_H = 0 - H
         assert H is minus_H
 
+    # TODO: test __matmul__
+    # TODO: test __add__
+    # TODO: test __truediv__
+
     @pytest.mark.parametrize(
         ("value",),
         [
@@ -192,3 +196,72 @@ class TestQsymbolic:
     def test_neg_with_no_node(self):
         H = Qsymbolic()
         assert H is -H
+
+    @pytest.mark.parametrize(
+        ("a_value", "b_value", "expected_result"),
+        [
+            pytest.param(None, None, True, id="none-none-eq"),
+            pytest.param(5, 5, True, id="constant-constant-eq"),
+            pytest.param(1, 5, False, id="constant-constant-neq"),
+            pytest.param(5, None, False, id="constant-none-neq"),
+            pytest.param(None, 5, False, id="none-constant-neq"),
+            pytest.param(qutip.sigmax(), qutip.sigmax(), True, id="oper-oper-eq"),
+            pytest.param(qutip.sigmax(), qutip.sigmay(), False, id="oper-oper-neq"),
+        ],
+    )
+    def test_equality(self, a_value, b_value, expected_result):
+        a = Qsymbolic(to_node(a_value)) if a_value is not None else Qsymbolic()
+        b = Qsymbolic(to_node(b_value)) if b_value is not None else Qsymbolic()
+        result = a == b
+        assert result is expected_result
+
+    @pytest.mark.parametrize(
+        ("value",),
+        [
+            pytest.param(5, id="constant"),
+            pytest.param(qutip.sigmax(), id="oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), id="super"),
+        ],
+    )
+    def test_dag(self, value):
+        node = to_node(value)
+        H = Qsymbolic(node).dag()
+        assert H._node == adjoint.adjoint(node)
+
+    def test_dag_with_no_node(self):
+        H = Qsymbolic()
+        assert H is H.dag()
+
+    @pytest.mark.parametrize(
+        ("value",),
+        [
+            pytest.param(5, id="constant"),
+            pytest.param(qutip.sigmax(), id="oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), id="super"),
+        ],
+    )
+    def test_conj(self, value):
+        node = to_node(value)
+        H = Qsymbolic(node).conj()
+        assert H._node == conjugate.conjugate(node)
+
+    def test_conj_with_no_node(self):
+        H = Qsymbolic()
+        assert H is H.conj()
+
+    @pytest.mark.parametrize(
+        ("value",),
+        [
+            pytest.param(5, id="constant"),
+            pytest.param(qutip.sigmax(), id="oper"),
+            pytest.param(qutip.spre(qutip.sigmax()), id="super"),
+        ],
+    )
+    def test_trans(self, value):
+        node = to_node(value)
+        H = Qsymbolic(node).trans()
+        assert H._node == transpose.transpose(node)
+
+    def test_trans_with_no_node(self):
+        H = Qsymbolic()
+        assert H is H.trans()

@@ -8,7 +8,7 @@ import typing
 
 from qutip.core.dimensions import Field
 
-from .nodes import matmul, negate, sum, tensor, to_node
+from .nodes import adjoint, conjugate, matmul, negate, sum, tensor, to_node, transpose
 
 if typing.TYPE_CHECKING:
     from qutip import Qobj
@@ -88,9 +88,8 @@ class Qsymbolic:
             return Qsymbolic(other_node)
         return Qsymbolic(sum.from_terms((other_node, negate.negate(self._node))))
 
-    # TODO:
-    # - __mul__
-    # - __rmul__
+    # TODO: __mul__
+    # TODO: __rmul__
 
     def __matmul__(self, other: Qobj | Qsymbolic) -> Qsymbolic:
         # TODO: Support scalars
@@ -115,9 +114,24 @@ class Qsymbolic:
             return self
         return Qsymbolic(negate.negate(self._node))
 
-    # TODO:
-    # - __eq__ -- do we want this?
-    # - __pow__
-    # - dag
-    # - conj
-    # - trans (transpose)
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        return self._node == other._node
+
+    # TODO: __pow__
+
+    def dag(self) -> Qsymbolic:
+        if self._node is None:
+            return self
+        return Qsymbolic(adjoint.adjoint(self._node))
+
+    def conj(self) -> Qsymbolic:
+        if self._node is None:
+            return self
+        return Qsymbolic(conjugate.conjugate(self._node))
+
+    def trans(self) -> Qsymbolic:
+        if self._node is None:
+            return self
+        return Qsymbolic(transpose.transpose(self._node))
