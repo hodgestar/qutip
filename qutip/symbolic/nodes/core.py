@@ -67,9 +67,8 @@ class SymbolicType(enum.Enum):
     # Leaf nodes:
 
     QOBJ = "qobj"
-    # TODO: Rename complex_coefficient to coefficient
     CONSTANT = "constant"
-    COMPLEX_COEFFICIENT = "complex_coefficient"
+    COEFFICIENT = "coefficient"
 
     # Single-child operation nodes:
 
